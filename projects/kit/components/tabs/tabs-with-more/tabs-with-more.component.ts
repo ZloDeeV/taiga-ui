@@ -22,6 +22,7 @@ import {
     toInt,
     TuiActiveZoneDirective,
     tuiAssertIsHTMLElement,
+    tuiClamp,
     TuiContextWithImplicit,
     tuiDefaultProp,
 } from '@taiga-ui/cdk';
@@ -95,10 +96,23 @@ export class TuiTabsWithMoreComponent implements AfterViewInit {
         );
     }
 
-    get activeElement(): HTMLElement | null {
-        return this.options.exposeActive || this.lastVisibleIndex >= this.activeItemIndex
-            ? this.tabs[this.activeItemIndex] || null
-            : this.moreButton?.nativeElement || null;
+    // TODO: Improve performance
+    get visibleTabs(): readonly HTMLElement[] {
+        return Array.from<HTMLElement>(
+            this.elementRef.nativeElement.querySelectorAll('.t-tabs [tuiTab]'),
+        );
+    }
+
+    get activeElement(): HTMLElement | null | undefined {
+        if (this.options.exposeActive || this.lastVisibleIndex >= this.activeItemIndex) {
+            const visibleTabs = this.visibleTabs;
+            const lastVisibleIndex = visibleTabs.length - 1;
+            const clampedIndex = tuiClamp(this.activeItemIndex || 0, 0, lastVisibleIndex);
+
+            return visibleTabs[clampedIndex];
+        }
+
+        return this.moreButton?.nativeElement;
     }
 
     get isMoreVisible(): boolean {

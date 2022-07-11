@@ -27,7 +27,7 @@ import {debounceTime, map, mapTo, share, switchMap} from 'rxjs/operators';
     },
 })
 export class TuiUnderlineComponent {
-    private readonly element$ = new ReplaySubject<HTMLElement | null>(1);
+    private readonly element$ = new ReplaySubject<HTMLElement | null | undefined>(1);
 
     private readonly refresh$ = this.element$.pipe(
         switchMap(element =>
@@ -40,7 +40,7 @@ export class TuiUnderlineComponent {
 
     @Input()
     @tuiDefaultProp()
-    set element(element: HTMLElement | null) {
+    set element(element: HTMLElement | null | undefined) {
         this.element$.next(element);
     }
 
