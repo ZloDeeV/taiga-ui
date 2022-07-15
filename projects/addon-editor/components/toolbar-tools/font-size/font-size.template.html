@@ -22,6 +22,7 @@
                 *ngFor="let item of fontsOptions$ | async"
                 tuiOption
                 [style.fontFamily]="item.family"
+                [attr.data-name]="item.name"
                 [style.fontSize.px]="item.px"
                 [style.fontWeight]="item.weight"
                 (click)="onClick(item)"

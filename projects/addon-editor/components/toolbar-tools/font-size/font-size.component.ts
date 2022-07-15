@@ -6,6 +6,7 @@ import {
     TUI_EDITOR_FONT_OPTIONS,
     TUI_EDITOR_TOOLBAR_TEXTS,
 } from '@taiga-ui/addon-editor/tokens';
+import {tuiPx} from '@taiga-ui/cdk';
 import {LanguageEditor} from '@taiga-ui/i18n';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -16,12 +17,22 @@ import {map} from 'rxjs/operators';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TuiFontSizeComponent {
+    readonly normalFontSize = 15;
+
     readonly fontsOptions$: Observable<ReadonlyArray<Partial<TuiEditorFontOption>>> =
         this.fontOptionsTexts$.pipe(
             map(texts => [
                 {
-                    px: 15,
+                    px: 13,
+                    name: texts.small,
+                },
+                {
+                    px: this.normalFontSize,
                     name: texts.normal,
+                },
+                {
+                    px: 17,
+                    name: texts.large,
                 },
                 {
                     px: 24,
@@ -52,11 +63,14 @@ export class TuiFontSizeComponent {
         >,
     ) {}
 
-    onClick({headingLevel}: Partial<TuiEditorFontOption>): void {
+    onClick({
+        headingLevel,
+        px = this.normalFontSize,
+    }: Partial<TuiEditorFontOption>): void {
         if (headingLevel) {
             this.editor.setHeading(headingLevel);
         } else {
-            this.editor.setParagraph();
+            this.editor.setParagraph({fontSize: tuiPx(px)});
         }
     }
 }
